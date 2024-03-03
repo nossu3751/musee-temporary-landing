@@ -1,0 +1,107 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<title>
+			Musee
+		</title>
+        <link rel="icon" type="image/x-icon" href="./images/favicon.ico">
+		<meta charset="utf-8"><meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="stylesheet" href="assets/css/main.css">
+    </head>
+    <body>
+        <img src="images/aboutpage prototype.png" id="background-image"/> 
+        <div class="button" id="button1">
+            <img src="images/button1.png"/>
+        </div>
+        <div class="button" id="button2">
+            <img src="images/button2.png"/>
+        </div>
+        <div class="button" id="button3">
+            <img src="images/button3.png"/>
+        </div>
+        <div class="button" id="button4">
+            <img src="images/button4.png"/>
+        </div>
+
+        <div id="museeDesktopSuggestion" class="modal">
+            <div class="modal-content">
+                <img src="images/before the website container.png"/>
+                <!-- <span class="close-btn">&times;</span> -->
+                <div class="button" id="button5">
+                    <img src="images/button5.png"/>
+                </div>
+            </div>
+        </div>
+
+        <div id="museeEmailInput" class="modal">
+            <div class="modal-content">
+                <img src="images/work in progress.png"/>
+                <span class="close-btn">&times;</span>
+                <div class="input" id="museeEmailInputArea">
+                    <input id="museeEmailInputText"></input>
+                    <img id="send-icon" src="images/paper-plane.png"/>
+                </div>
+                
+            </div>
+        </div>
+        
+        <script>
+        document.addEventListener('DOMContentLoaded', (event) => {
+            const modal = document.getElementById("museeDesktopSuggestion");
+            const emailModal = document.getElementById("museeEmailInput");
+            if (!localStorage.getItem('museeModalShown')) {
+                modal.style.display = "flex";
+                // localStorage.setItem('museeModalShown', 'true');
+            }
+            
+            document.getElementById("button5").addEventListener('click', function() {
+                modal.style.display = "none";
+            });
+
+            const buttonsToShowEmailModal = [document.getElementById("button1"), document.getElementById("button2"), document.getElementById("button3"), document.getElementById("button4")];
+            buttonsToShowEmailModal.forEach(button => {
+                button.addEventListener('click', function() {
+                    emailModal.style.display = "flex";
+                });
+            });
+
+            document.querySelector(".close-btn").addEventListener('click', function() {
+                emailModal.style.display = "none";
+            });
+                        
+            window.addEventListener('click', function(event) {
+                if (event.target === modal) {
+                    modal.style.display = "none";
+                }
+                if (event.target === emailModal) {
+                    emailModal.style.display = "none";
+                }
+            });
+
+            document.getElementById("send-icon").addEventListener('click', function() {
+                const emailInput = document.getElementById("museeEmailInputText").value; // Get the input value
+
+                // Create the data object to send
+                const data = { email: emailInput };
+
+                // Use fetch to post the data
+                fetch('http://localhost:5002/mailList', {
+                    method: 'POST', // or 'PUT'
+                    headers: { 'Content-Type': 'application/json', },
+                    body: JSON.stringify(data), // Convert the JavaScript object to a JSON string
+                })
+                .then(response => response.json()) 
+                .then(data => {
+                    console.log('Success:', data);
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                })
+                .finally(() => {
+                    document.getElementById("museeEmailInputText").value = '';
+                    emailModal.style.display = "none";
+                });
+            });
+        });
+        </script>
+    </body>
+</html>
